@@ -17,6 +17,12 @@ var connection = mysql.createConnection({
 server.route({
     method: 'GET',
     path: '/get-all-guest-comments',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     handler: function (request, reply) {
         
         connection.query('SELECT * FROM guest_comments', function (error, results, fields) {
