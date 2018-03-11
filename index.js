@@ -47,7 +47,29 @@ server.route([{
                 reply(results);       
             });
         }
-    }]);
+    },
+    {
+        method: 'POST',
+        path: '/post-new-comment',
+        config: {
+            cors: {
+                origin: ['*'],
+                additionalHeaders: ['cache-control', 'x-requested-with']
+            }
+        },
+        handler: function (request, reply) {
+            let comment_id = request.payload.id
+            let comment_title = request.payload.title
+            let comment_author = request.payload.author
+            let comment_content = request.payload.content
+
+            connection.query(`INSERT INTO guest_comments (id, comment_title, comment_author, comment_content) VALUES (?, ?, ?, ?)`, [comment_id, comment_title,comment_author, comment_content],function (error, results, fields) {
+                if (error) throw error;
+                reply(results);       
+            });
+        }
+    }
+]);
 
 server.start((err) => {
 
