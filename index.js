@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
   database : 'project_guestbook'
 });
 
-server.route({
+server.route([{
     method: 'GET',
     path: '/get-all-guest-comments',
     config: {
@@ -24,14 +24,30 @@ server.route({
         }
     },
     handler: function (request, reply) {
-        
-        connection.query('SELECT * FROM guest_comments', function (error, results, fields) {
-            if (error) throw error;
-            reply(results);
-            
-        });
-    }
-});
+            connection.query('SELECT * FROM guest_comments', function (error, results, fields) {
+                if (error) throw error;
+                reply(results);
+                
+            });
+        }
+    },
+    {
+        method: 'GET',
+        path: '/get-guest-comments/{id}',
+        config: {
+            cors: {
+                origin: ['*'],
+                additionalHeaders: ['cache-control', 'x-requested-with']
+            }
+        },
+        handler: function (request, reply) {
+            let comment_id = request.params.id
+            connection.query('SELECT * FROM guest_comments where guest_comments.id =?', comment_id,function (error, results, fields) {
+                if (error) throw error;
+                reply(results);       
+            });
+        }
+    }]);
 
 server.start((err) => {
 
